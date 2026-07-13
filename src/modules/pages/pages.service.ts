@@ -13,11 +13,17 @@ export class PagesService {
   ) {}
 
   // Public: only published pages
-  async findAllPublished(): Promise<Page[]> {
+  async findAllPublished(): Promise<Partial<Page[]>> {
     return this.pagesRepo.find({
+      select:{
+          slug: true,
+      title: true,
+      content: true,
+      },
       where: { isPublished: true },
       order: { slug: 'ASC' },
     });
+
   }
 
   async findBySlug(slug: string): Promise<Page> {

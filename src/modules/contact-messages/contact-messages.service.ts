@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContactMessage } from './entities/contact-message.entity';
-import { CreateContactMessageDto } from './dto/create-contact-message.dto';
+import { ContactMessageResponseDto, CreateContactMessageDto } from './dto/create-contact-message.dto';
 import { UpdateContactMessageStatusDto } from './dto/update-contact-message-status.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
@@ -20,7 +20,7 @@ export class ContactMessagesService {
   async create(
     dto: CreateContactMessageDto,
     ipAddress?: string,
-  ): Promise<ContactMessage> {
+  ): Promise<ContactMessageResponseDto> {
     // Basic anti-spam: block more than 3 submissions from the same IP
     // within the last 10 minutes. Replace with a proper rate-limit guard
     // (e.g. @nestjs/throttler) or captcha before going to production.
@@ -45,7 +45,13 @@ export class ContactMessagesService {
     // TODO: trigger notification email to staff here once the
     // notifications module + email provider integration exists.
 
-    return saved;
+  return {
+  name: saved.name,
+  email: saved.email,
+  subject: saved.subject,
+  message: saved.message,
+  createdAt: saved.createdAt,
+};
   }
 
   // TODO: guard this with admin/staff auth once the auth module exists

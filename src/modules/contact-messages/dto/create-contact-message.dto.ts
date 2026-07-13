@@ -29,3 +29,11 @@ export class CreateContactMessageDto {
   @MinLength(5)
   message: string;
 }
+export class ContactMessageResponseDto {
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+  createdAt: Date;
+}
