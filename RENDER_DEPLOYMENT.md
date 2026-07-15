@@ -37,6 +37,7 @@ This guide will walk you through deploying your NestJS backend API to Render.com
    - Select your `bfef-sprint1` repository
 
 2. **Configure Build Settings**
+
    ```
    Name: bfef-kenya-api
    Environment: Node
@@ -55,6 +56,7 @@ This guide will walk you through deploying your NestJS backend API to Render.com
 In your Render Web Service dashboard, go to **"Environment"** and add these variables:
 
 #### Required Variables:
+
 ```env
 NODE_ENV=production
 DATABASE_URL=<your-external-database-url-from-step-1>
@@ -62,15 +64,19 @@ PORT=10000
 ```
 
 #### CORS Configuration:
+
 ```env
 FRONTEND_URL=https://yourdomain.com
 ```
-*Replace with your actual frontend domain(s). For multiple domains, separate with commas:*
+
+_Replace with your actual frontend domain(s). For multiple domains, separate with commas:_
+
 ```env
 FRONTEND_URL=https://yourdomain.com,https://www.yourdomain.com,https://admin.yourdomain.com
 ```
 
 #### Optional (if not using DATABASE_URL):
+
 ```env
 DATABASE_HOST=<host-from-render>
 DATABASE_PORT=5432
@@ -111,6 +117,7 @@ If you have TypeORM migrations set up:
    - Use a PostgreSQL client (pgAdmin, DBeaver, etc.)
 
 2. **Execute Schema**
+
    ```bash
    # Using psql command line
    psql <your-external-database-url> < 01_sprint1_schema.sql
@@ -132,12 +139,14 @@ https://your-service-name.onrender.com
 ### Available Endpoints:
 
 #### Public Endpoints:
+
 - `GET /api/v1/public/pages` - Get all pages
 - `GET /api/v1/public/pages/:slug` - Get page by slug
 - `GET /api/v1/public/leadership` - Get leadership team
 - `POST /api/v1/public/contact` - Submit contact message
 
 #### Admin Endpoints:
+
 - `GET /api/v1/admin/pages` - Get all pages (admin)
 - `POST /api/v1/admin/pages` - Create new page
 - `PATCH /api/v1/admin/pages/:id` - Update page
@@ -154,47 +163,83 @@ https://your-service-name.onrender.com
 ## 🔍 Testing Your Deployment
 
 ### Basic Health Check:
+
 ```bash
 curl https://your-service-name.onrender.com/api/v1/public/pages
 ```
 
 ### Using Browser:
+
 Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 
 ## 🚨 Troubleshooting
 
 ### Common Issues:
 
-#### 1. Build Failures
-**Symptoms**: Build fails during npm install or npm start
-**Solutions**:
-- Check Node.js version compatibility
-- Ensure all dependencies are in `dependencies` (not `devDependencies`)
-- Review build logs for specific error messages
+#### 1. Build Failures - "nest: not found"
 
-#### 2. Database Connection Errors
-**Symptoms**: "Unable to connect to database" errors
+**Symptoms**: Build fails during npm install or build with "nest: not found" error
 **Solutions**:
+
+- ✅ **FIXED**: `@nestjs/cli` is now in `dependencies` (not `devDependencies`)
+- ✅ **FIXED**: `typescript` is now in `dependencies` for build process
+- ✅ **FIXED**: Build script uses correct `nest build` command
+- If still failing, check Node.js version compatibility (requires 18+)
+
+#### 2. Start Command Issues
+
+**Symptoms**: Service fails to start after successful build
+**Solutions**:
+
+- ✅ **FIXED**: Start script now uses `node dist/main` instead of `nest start`
+- Ensure `PORT=10000` environment variable is set on Render
+- Check that build completed successfully and `dist/` folder exists
+
+#### 3. Dependency Issues
+
+**Symptoms**: Missing dependencies or version conflicts
+**Solutions**:
+
+- All build dependencies are now in `dependencies` section
+- Node.js version >=18.0.0 is specified in package.json
+- npm version >=9.0.0 is specified for compatibility
+  **Symptoms**: "Unable to connect to database" errors
+  **Solutions**:
 - Verify `DATABASE_URL` is correctly set
 - Ensure database is running and accessible
 - Check if database SSL settings match configuration
 
 #### 3. CORS Errors
+
 **Symptoms**: Browser blocks requests from frontend
 **Solutions**:
+
 - Update `FRONTEND_URL` with correct domain(s)
 - Remove `http://localhost` URLs from production `FRONTEND_URL`
 - Ensure CORS origins match your actual frontend domain
 
 #### 4. Port Issues
+
 **Symptoms**: Service fails to start with port errors
 **Solutions**:
+
 - Ensure `PORT=10000` is set (Render's requirement)
 - Don't hardcode ports in your application
 
-#### 5. Environment Variable Issues
+#### 6. Security Vulnerabilities Warning
+
+**Symptoms**: npm audit shows vulnerabilities during build
+**Solutions**:
+
+- **For Production**: Most vulnerabilities are in dev dependencies and don't affect runtime
+- **Critical vulnerabilities**: Only update if they affect production dependencies
+- **Breaking changes**: Avoid `npm audit fix --force` as it may break your application
+- **Recommendation**: Monitor for security updates and update incrementally
+- **Alternative**: Use tools like Snyk or GitHub Dependabot for safer updates
+
 **Symptoms**: App crashes with missing configuration errors
 **Solutions**:
+
 - Double-check all required environment variables are set
 - Verify `NODE_ENV=production`
 - Ensure no typos in variable names
@@ -202,11 +247,13 @@ Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 ## 📊 Monitoring
 
 ### Render Dashboard:
+
 - **Logs**: Real-time application logs
 - **Metrics**: CPU, Memory, Response times
 - **Events**: Deployment history and status
 
 ### Key Metrics to Watch:
+
 - Response time < 2 seconds
 - Memory usage < 80% of limit
 - Zero 5xx errors
@@ -225,11 +272,13 @@ Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 ## 💰 Cost Optimization
 
 ### Free Tier Limitations:
+
 - **Web Service**: Sleeps after 15 minutes of inactivity
 - **Database**: 1GB storage, 97 hours/month compute
 - **Bandwidth**: 100GB/month
 
 ### Production Recommendations:
+
 - **Web Service**: Upgrade to paid plan for 24/7 availability
 - **Database**: Monitor storage and upgrade as needed
 - **CDN**: Consider Cloudflare for static assets
@@ -249,11 +298,13 @@ Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 ## 🆘 Support
 
 ### Render Resources:
+
 - [Render Documentation](https://render.com/docs)
 - [Node.js Deployment Guide](https://render.com/docs/deploy-node-express-app)
 - [Environment Variables Guide](https://render.com/docs/environment-variables)
 
 ### NestJS Resources:
+
 - [NestJS Production Documentation](https://docs.nestjs.com/)
 - [TypeORM Production Guide](https://typeorm.io/)
 
@@ -262,6 +313,7 @@ Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 ## 📝 Post-Deployment Notes
 
 After deployment, remember to:
+
 1. **Update your frontend** to use the new API URL
 2. **Test all functionality** in production environment
 3. **Monitor logs** for any runtime errors
