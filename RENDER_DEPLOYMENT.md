@@ -176,13 +176,19 @@ Visit: `https://your-service-name.onrender.com/api/v1/public/pages`
 
 ### Common Issues:
 
-#### 1. Build Failures - "nest: not found"
+#### 1. Build Failures - TypeScript and CLI Errors
 
-**Symptoms**: Build fails during npm install or build with "nest: not found" error
+**Symptoms**:
+
+- "nest: not found" error during build
+- "Could not find a declaration file for module 'express'" error
+- TypeScript compilation failures
+
 **Solutions**:
 
 - ✅ **FIXED**: `@nestjs/cli` is now in `dependencies` (not `devDependencies`)
 - ✅ **FIXED**: `typescript` is now in `dependencies` for build process
+- ✅ **FIXED**: `@types/express` and `@types/node` are now in `dependencies`
 - ✅ **FIXED**: Build script uses correct `nest build` command
 - If still failing, check Node.js version compatibility (requires 18+)
 
