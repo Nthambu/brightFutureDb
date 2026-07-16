@@ -10,7 +10,7 @@ export const databaseConfig = (): TypeOrmModuleOptions => {
       type: "postgres",
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: !isProduction,
+      synchronize: true, // Temporarily enable for initial setup
       ssl: isProduction ? { rejectUnauthorized: false } : false,
       logging: process.env.NODE_ENV === "development",
       extra: isProduction
@@ -37,7 +37,7 @@ export const databaseConfig = (): TypeOrmModuleOptions => {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME || "brightFuture",
     autoLoadEntities: true,
-    synchronize: !isProduction,
+    synchronize: true, // Temporarily enable for initial setup
     ssl:
       process.env.DATABASE_SSL === "true"
         ? { rejectUnauthorized: false }
