@@ -22,7 +22,7 @@ export class ContactMessagesService {
     ipAddress?: string,
   ): Promise<ContactMessageResponseDto> {
     // Basic anti-spam: block more than 3 submissions from the same IP
-    // within the last 10 minutes. Replace with a proper rate-limit guard
+    // within the last 10 minutes. To replace with a proper rate-limit guard
     // (e.g. @nestjs/throttler) or captcha before going to production.
     if (ipAddress) {
       const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
